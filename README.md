@@ -1,5 +1,5 @@
 # RCA
-### Implementation of Reverse Classification in Python with SimpleElastix
+### Implementation of Reverse Classification Accuracy in Python with SimpleElastix
 
 This code implements Reverse Classification Accuracy (RCA) as applied in our MICCAI 2017 paper:
 
