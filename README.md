@@ -89,7 +89,7 @@ You will need to clone this repository and also download two folders into its ro
 
 We have classes 0 (background), 1 (LV cavity), 2 (LV myocardium) and 4 (RV cavity) in our segmentations, so the `config.cfg` is the same as the one in this repository.
 
-###For a single test-segmentation:
+### For a single test-segmentation:
 
 We pass the name of the directory that contains all of the files associated with the test-segmentation we want to test. We can run the command:
 
