@@ -23,7 +23,7 @@ scipy==1.0.1
 SimpleITK==1.1.0
 ```
 
-To run RCA on an image-segmentation pair, you require a small (~100) set of reference images and corresponding manual segmentations that are representative of the domain of your segmentation-under-test e.g. a set of short-axis cardiac MRI atlases for testing a short-axis cardiac MRI segmentation.
+To run RCA on an image-segmentation pair, you require a small set of reference images (there are 5 in our demo below, but we use 100 in practice) and corresponding manual segmentations that are representative of the domain of your segmentation-under-test e.g. a set of short-axis cardiac MRI atlases for testing a short-axis cardiac MRI segmentation.
 
 There are three files:
 * `RCA.py` - the script run to evaluate the predicted quality of a segmentation (see usage below)
