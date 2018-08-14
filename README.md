@@ -34,7 +34,7 @@ There are three files:
 
 The output is two-fold
 
-* a visual representation on-screen showing the distribution of reference images by DSC along with the overall output of best DSC and surface-distance metrics
+* a visual representation on-screen showing the distribution of reference images by DSC along with the overall output of best DSC and surface-distance metrics. The atlas (reference image) that contributed the score is also shown e.g. `Atlas: 0`
 * a `.mat` file in `output_folder/data` which contains the DSC and surface distance metrics per class and for the whole-segmentation case for each reference image. i.e. each reference image gets a `n x 5` matrix of metric values where `n` is the number of classes. The overall prediction is also stored in the `.mat`.
 
 ## Usage
@@ -85,14 +85,31 @@ class_list = [0,1,2,4]
 You will need to clone this repository and also download two folders into its root:
 
 * `reference_images`: a set of 5 reference images and manual segmentations [available here](https://www.doc.ic.ac.uk/~rdr16/RCA/reference_images/ 'reference_images')
-* `test_subjects`: a single folder containing the automated segmentation `segmentation.nii.gz` of an image `image.nii.gz` and its manual `GT.nii.gz` [available here](https://www.doc.ic.ac.uk/~rdr16/RCA/test_images/ 'test_images')
+* `test_subjects`: a single folder containing the automated segmentation `segmentation.nii.gz` of an image `image.nii.gz` and its manual `GT.nii.gz` [available here](https://www.doc.ic.ac.uk/~rdr16/RCA/test_subjects/ 'test_subjects')
 
-We have classes 0 (background), 1 (LV cavity), 2 (LV myocardium) and 4 (RV cavity) in our segmentations, so the `config.cfg` is the same as the one in this repository. Assuming all requirements are met (i.e. SimpleElastix has been compiled) we can run the command:
+We have classes 0 (background), 1 (LV cavity), 2 (LV myocardium) and 4 (RV cavity) in our segmentations, so the `config.cfg` is the same as the one in this repository.
+
+###For a single test-segmentation:
+
+We pass the name of the directory that contains all of the files associated with the test-segmentation we want to test. We can run the command:
 
 ```
 python ./RCA.py --subject ./test_subjects/subject1 --refs ./reference_images --config config.cfg --GT GT.nii.gz --seg segmentation.nii.gz --output ./done
 ```
 
-This runs RCA on the single subject `subject1` and places the output into a folder called `done`. If we passed a `.txt` containing a list of the directories for subjects 1-100, we would have subfolders for each subject placed into `done`.
+This runs RCA on the single subject `subject1` and places the output into a folder called `done`.
 
+### For a selection of test-segmentations
 
+ If we pass a `.txt` containing a list of the directories for subjects 1-`n`, we would have `n` subfolders for each subject placed into `done`. We create `test_subjects.txt` that contains:
+
+```
+./test_subjects/subject1
+./test_subjects/subject2
+```
+
+This time we pass the argument `subjects` and not `subject`:
+
+```
+python ./RCA.py --subjects test_subjects.txt --refs ./reference_images --config config.cfg --GT GT.nii.gz --seg segmentation.nii.gz --output ./done
+```
