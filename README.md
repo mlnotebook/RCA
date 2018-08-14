@@ -82,7 +82,12 @@ class_list = [0,1,2,4]
 
 ## Demo
 
-In this repository there are 5 reference images and manual segmentations in the `references` subfolder. There is a single `segmentation.nii.gz` of an `image.nii.gz` and its manual `GT.nii.gz` in the `test_subjects` subfolder. We have classes 0 (background), 1 (LV cavity), 2 (LV myocardium) and 4 (RV cavity) in our segmentations. Assuming all requirements are met (i.e. SimpleElastix has been compiled) we can run the command:
+You will need to clone this repository and also download two folders into its root:
+
+* `reference_images`: a set of 5 reference images and manual segmentations [available here](https://doc.ic.ac.uk/~rdr16/RCA/reference_images, 'reference_images')
+* `test_subjects`: a single folder containing the automated segmentation `segmentation.nii.gz` of an image `image.nii.gz` and its manual `GT.nii.gz` [available here](https://doc.ic.ac.uk/~rdr16/RCA/test_images, 'test_images')
+
+We have classes 0 (background), 1 (LV cavity), 2 (LV myocardium) and 4 (RV cavity) in our segmentations, so the `config.cfg` is the same as the one in this repository. Assuming all requirements are met (i.e. SimpleElastix has been compiled) we can run the command:
 
 ```
 python ./RCA.py --subject ./test_subjects/subject1 --refs ./reference_images --config config.cfg --GT GT.nii.gz --seg segmentation.nii.gz --output ./done
