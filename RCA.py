@@ -33,7 +33,7 @@ prog_help = "Script must be given (--refs, --subject, --config, --output\n"\
            "--refs                  = directory where reference images are listed (pre-prepared)\n"\
            "--subject               = directory containing the image, segmentation and landmarks to be tested\n"\
            "--subjects              = .txt file containing one subject-folder path per line\n"\
-           "--config                = '5kBIOBANK', 'ATLAS' or 'BIOBANK'\n"\
+           "--config                = .cfg filename e.g. 'config.cfg'\n"\
            "--GT                    = the filename of the GT segmentation (optional)\n"\
            "--seg                   = the filename of the test segmentation (optional)\n"\
            "--output                = root folder to output the files (option - default to pwd)\n"
@@ -132,22 +132,17 @@ for subject, output_FOLDER in zip(subjectList, outputList):
 
 #####   ASSIGN: VARIABLES BASED ON THE CONFIG FILE  #####
 # This line reads in "image_FILE, seg_FILE and landmarks_FILE variables based on args.config"
-    if not os.path.exists(os.path.abspath('config_file_filenames_' + args.config + '.cfg')):
-        msg = R+"[*] Config file doesn't exist: {}\n\n".format(args.config)+W
+    cfgfile = args.config if args.config[-4:] == '.cfg' else args.config + '.cfg'
+    if not os.path.exists(os.path.abspath(cfgfile)):
+        msg = R+"[*] Config file doesn't exist: {}\n\n".format(cfgfile)+W
         sys.exit(msg + prog_help)
     else:
-        filenames_CONFIG = os.path.abspath('config_file_filenames_' + args.config + '.cfg')
+        filenames_CONFIG = os.path.abspath(cfgfile)
         print G+'[*] config_file: \t\t{}'.format(filenames_CONFIG)+W
     image_FILE      = []
     seg_FILE        = []
     landmarks_FILE  = []
     execfile(filenames_CONFIG)
-
-##### ASSIGN: THE CLASS NUMBERS FOR SEGMENTATIONS   #####
-    if args.config == '5kBIOBANK':
-        class_list = [0,1,2,3]     # Classes in the segmentations 0= Background, 1=LV Cavity, 2=LV Myocardium, 4=RV Cavity (3 in 5kBiobank)
-    else:
-        class_list = [0,1,2,4]
 
 
 ##### NOTUSED: POTENTIAL TO USE THIS TO CALL AUGMENTATIONS/CROPPING #####

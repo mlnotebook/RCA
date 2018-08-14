@@ -28,7 +28,7 @@ There are three files:
 * `--subject`: a directory containing the image and segmentation to be tested;
 * `--subjects`: a `.txt` file containgin one image-folder path per line;
 * `--refs`: a directory containing subfolders, one for each reference image-segmentation pair;
-* `--config`: only pass the `SOMENAME` part of the file named `./config_file_filenames_SOMENAME.cfg` file. Contains the filenames;
+* `--config`: name of the config file that contains the filenames;
 * `--output`: a directory (will be created) to contain the output from RCA - will create one subfolder per image in `output`;
 * `--GT`: (optional) the filename of the ground truth segmentation if we want to evaluate against the real metrics.
 
@@ -46,6 +46,7 @@ For multiple test segmentations, there must be one folder per subject/segmentati
     |-image.nii.gz
     |-segmentation.nii.gz
 ```
+
 The subject names e.g. `subject1` are used to name the output subfolders that will be stored in `output` directory.  A ground truth segmentation can also be present if evaluating the prediction against the real value.
 
 
@@ -55,7 +56,7 @@ Like the subjects, the reference images and manual segmentations should each be 
 
 ### `config.cfg`
 
-The configuration file is named `./config_file_filenames_SOMENAME.cfg` but only the `SOMENAME` is passed to the script. This allows distinction between different experiments using different filenames. You must supply `image_FILE` and `seg_FILE` in `.cfg`.
+The configuration file named `config.cfg` is passed to the script. This allows distinction between different experiments using different filenames. You must supply `image_FILE` and `seg_FILE` in `.cfg` e.g.:
 
 ```
 image_FILE = "sa_ED.nii.gz"
