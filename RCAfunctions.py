@@ -39,17 +39,18 @@ def surfd(input1, input2, sampling=1, connectivity=1):
 
 	connnect 	= morphology.generate_binary_structure(input_1.ndim, connectivity)
 
-	input1_border 	= input_1 - morphology.binary_erosion(input_1, connnect)
-	input2_border 	= input_2 - morphology.binary_erosion(input_2, connnect)
+	input1_border 	= np.bitwise_xor(input_1, morphology.binary_erosion(input_1, connnect))
+	input2_border 	= np.bitwise_xor(input_2, morphology.binary_erosion(input_2, connnect))
 
 	dta 	  	= morphology.distance_transform_edt(~input1_border,sampling)
 	dtb 	  	= morphology.distance_transform_edt(~input2_border,sampling)
 
 	sds 	  	= np.concatenate([np.ravel(dta[input2_border!=0]), np.ravel(dtb[input1_border!=0])])
+
 	return sds
 
 
-def registration(subject_folder, output_folder, imgFilename, segFilename, maxreferences=100, refdir='/vol/biomedic/users/rdr16/RCA2017/registeredTrainingImgs', classes=[0,1,2,4], doBoth=1):
+def registration(subject_folder, output_folder, imgFilename, segFilename, maxreferences=100, refdir='./reference_images', classes=[0,1,2,4], doBoth=1):
 	### Function to perform registration between N-reference images (+ segmentations) and a single fixed image ###
 	### Inputs:
 	### subject_folder	= the directory containing the fixed image
@@ -81,35 +82,35 @@ def registration(subject_folder, output_folder, imgFilename, segFilename, maxref
 	elastixImagefilter.LogToConsoleOff()
 
 	parameterMap_1 = elastixImagefilter.GetDefaultParameterMap('rigid')
-	parameterMap_1['Transform']									= ['EulerTransform']
-	parameterMap_1['AutomaticTransformInitialization'] 			= ["true"]
+	parameterMap_1['Transform']					= ['EulerTransform']
+	parameterMap_1['AutomaticTransformInitialization'] 		= ["true"]
 	parameterMap_1['AutomaticTransformInitializationMethod'] 	= ["CenterOfGravity"]
-	parameterMap_1['HowToCombineTransforms'] 					= ['Compose']
-	parameterMap_1['WriteResultImage'] 							= ['true']
-	parameterMap_1['UseDirectionCosines'] 						= ['true']
-	parameterMap_1['Interpolator'] 								= ['LinearInterpolator']
-	parameterMap_1['ResampleInterpolator'] 						= ['FinalLinearInterpolator']
+	parameterMap_1['HowToCombineTransforms'] 			= ['Compose']
+	parameterMap_1['WriteResultImage'] 				= ['true']
+	parameterMap_1['UseDirectionCosines'] 				= ['true']
+	parameterMap_1['Interpolator'] 					= ['LinearInterpolator']
+	parameterMap_1['ResampleInterpolator'] 				= ['FinalLinearInterpolator']
 
 	parameterMap = elastixImagefilter.GetDefaultParameterMap('affine')
-	parameterMap['Registration'] 								= ['MultiResolutionRegistration']
-	#parameterMap['AutomaticTransformInitialization'] 			= ["true"]
+	parameterMap['Registration'] 					= ['MultiResolutionRegistration']
+	#parameterMap['AutomaticTransformInitialization'] 		= ["true"]
 	#parameterMap['AutomaticTransformInitializationMethod'] 	= ["CenterOfGravity"]
-	parameterMap['Resampler'] 									= ['DefaultResampler']
-	parameterMap['WriteResultImage'] 							= ['true']
-	parameterMap['UseDirectionCosines'] 						= ['true']
-	parameterMap['Interpolator'] 								= ['LinearInterpolator']
-	parameterMap['ResampleInterpolator'] 						= ['FinalLinearInterpolator']
-	parameterMap['FixedImagePyramid'] 							= ['FixedSmoothingImagePyramid']
-	parameterMap['MovingImagePyramid'] 							= ['MovingSmoothingImagePyramid']
-	parameterMap['Optimizer'] 									= ['AdaptiveStochasticGradientDescent']
-	parameterMap['Transform'] 									= ['BSplineTransform']
-	parameterMap['Metric'] 										= ['AdvancedMattesMutualInformation']
-	parameterMap['FinalGridSpacingInPhysicalUnits'] 			= ['16']
-	parameterMap['GridSpacingSchedule'] 						= ['4.0', '2.0']
-	parameterMap['NumberOfResolutions'] 						= ['2']
-	parameterMap['ImagePyramidSchedule'] 						= ['4 4 2',  '2 2 2']
-	parameterMap['NumberOfSpatialSamples'] 						= ['1024'] #512 in 2D 2048 in 3D
-	parameterMap['HowToCombineTransforms'] 						= ['Compose']
+	parameterMap['Resampler'] 					= ['DefaultResampler']
+	parameterMap['WriteResultImage'] 				= ['true']
+	parameterMap['UseDirectionCosines'] 				= ['true']
+	parameterMap['Interpolator'] 					= ['LinearInterpolator']
+	parameterMap['ResampleInterpolator'] 				= ['FinalLinearInterpolator']
+	parameterMap['FixedImagePyramid'] 				= ['FixedSmoothingImagePyramid']
+	parameterMap['MovingImagePyramid'] 				= ['MovingSmoothingImagePyramid']
+	parameterMap['Optimizer'] 					= ['AdaptiveStochasticGradientDescent']
+	parameterMap['Transform'] 					= ['BSplineTransform']
+	parameterMap['Metric'] 						= ['AdvancedMattesMutualInformation']
+	parameterMap['FinalGridSpacingInPhysicalUnits'] 		= ['16']
+	parameterMap['GridSpacingSchedule'] 				= ['4.0', '2.0']
+	parameterMap['NumberOfResolutions'] 				= ['2']
+	parameterMap['ImagePyramidSchedule'] 				= ['4 4 2',  '2 2 2']
+	parameterMap['NumberOfSpatialSamples'] 				= ['1024'] #512 in 2D 2048 in 3D
+	parameterMap['HowToCombineTransforms'] 				= ['Compose']
 
 	"""MultiMetric"""
 	#parameterMap['Registration']						= ['MultiMetricMultiResolutionRegistration']
@@ -219,7 +220,7 @@ def registration(subject_folder, output_folder, imgFilename, segFilename, maxref
 	 # 	subject_map 	= sitk.GetArrayFromImage(fixed_image_seg)
 
 	    	try:
-	    		Data.append([folders[idx]] + getMetrics(subject_map, ref_map, subject_classes=[0,1,2,4]))
+	    		Data.append([folders[idx]] + getMetrics(subject_map, ref_map, subject_classes=classes))
     		except (KeyboardInterrupt, SystemExit):
         		raise
     		except:

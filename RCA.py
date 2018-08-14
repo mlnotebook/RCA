@@ -66,13 +66,13 @@ if args.subjects:
     with open(args.subjects, 'r') as subjects:
         subjectList = subjects.read().splitlines()
     for line in subjectList:
-        outputList.append(os.path.join(output_root, 'RCA2964_2D', os.path.basename(line)))
+        outputList.append(os.path.join(output_root, os.path.basename(line)))
 else:
     subjectList = [args.subject] # list so that single subject can enter for-loop
     if not os.path.exists(os.path.abspath(output_root)):
         os.makedirs(os.path.abspath(output_root))
     output_FOLDER = os.path.abspath(output_root)
-    print G+'[*] output_folder: \t\t{}'.format(output_FOLDER)+W
+    print G+'[*] output_folder: \t{}'.format(output_FOLDER)+W
     outputList = [output_FOLDER]
 
 
@@ -88,8 +88,8 @@ for subject, output_FOLDER in zip(subjectList, outputList):
     else:
         subject_FOLDER = os.path.abspath(subject)
         subject_NAME = os.path.basename(subject_FOLDER) 
-        print G+'[*] subject_name: \t\t{}'.format(subject_NAME)+W
-        print G+'[*] subject_folder: \t\t{}'.format(subject_FOLDER)+W
+        print G+'[*] subject_name: \t{}'.format(subject_NAME)+W
+        print G+'[*] subject_folder: \t{}'.format(subject_FOLDER)+W
 
 
 #####   CHECK: HAS RCA ALREADY BEEN PERFORMED?  #####
@@ -118,7 +118,7 @@ for subject, output_FOLDER in zip(subjectList, outputList):
             sys.exit(msg + prog_help)
         else:
             subject_GT_FILE = os.path.abspath(os.path.join(subject, args.GT))
-            print G+'[*] subject_GT: \t\t{}'.format(os.path.abspath(os.path.join(subject, args.GT)))+W
+            print G+'[*] subject_GT: \t{}'.format(os.path.abspath(os.path.join(subject, args.GT)))+W
 
 
 #####   CHECK: DO THE REFERENCE IMAGES EXIST?   #####
@@ -127,30 +127,23 @@ for subject, output_FOLDER in zip(subjectList, outputList):
         sys.exit(msg + prog_help)
     else:
         ref_img_FOLDER = os.path.abspath(args.refs)
-        print G+'[*] ref_folder: \t\t{}'.format(ref_img_FOLDER)+W   
+        print G+'[*] ref_folder: \t{}'.format(ref_img_FOLDER)+W   
 
 
 #####   ASSIGN: VARIABLES BASED ON THE CONFIG FILE  #####
-# This line reads in "image_FILE, seg_FILE and landmarks_FILE variables based on args.config"
+# This line reads in "image_FILE and seg_FILE" variables based on args.config
     cfgfile = args.config if args.config[-4:] == '.cfg' else args.config + '.cfg'
     if not os.path.exists(os.path.abspath(cfgfile)):
         msg = R+"[*] Config file doesn't exist: {}\n\n".format(cfgfile)+W
         sys.exit(msg + prog_help)
     else:
         filenames_CONFIG = os.path.abspath(cfgfile)
-        print G+'[*] config_file: \t\t{}'.format(filenames_CONFIG)+W
+        print G+'[*] config_file: \t{}'.format(filenames_CONFIG)+W
     image_FILE      = []
     seg_FILE        = []
-    landmarks_FILE  = []
+    class_list      = []
     execfile(filenames_CONFIG)
 
-
-##### NOTUSED: POTENTIAL TO USE THIS TO CALL AUGMENTATIONS/CROPPING #####
-# Defaults to off
-    if args.prep:
-        print G+'[*] Ref image prep.:\t\tOn' +W
-    else:
-        print G+'[*] Ref image prep.:\t\t' +R+ 'Off'+W
 
 ##### CHECK: DOES THE TEST-SEGMENTATION EXIST?  #####
     if args.seg:
@@ -159,13 +152,12 @@ for subject, output_FOLDER in zip(subjectList, outputList):
             sys.exit(msg + prog_help)
         else:
             seg_FILE = os.path.abspath(os.path.join(subject, args.seg))
-            print G+'[*] subject_seg: \t\t{}'.format(os.path.abspath(os.path.join(subject, args.seg)))+W
+            print G+'[*] subject_seg: \t{}'.format(os.path.abspath(os.path.join(subject, args.seg)))+W
 
 #####   ASSIGN: ALL FILES SHOULD NOW BE ACCESSIBLE  #####
 # Copy the primary image and segmentation to the RCA folder
     subject_image_FILE     = os.path.abspath(os.path.join(subject_FOLDER, image_FILE        ))
     subject_seg_FILE       = os.path.abspath(os.path.join(subject_FOLDER, seg_FILE          ))
-    subject_landmarks_FILE = os.path.abspath(os.path.join(subject_FOLDER, landmarks_FILE    ))
 
     os.makedirs(os.path.join(output_FOLDER, 'main_image', 'cropped'))
     for f in [subject_image_FILE, subject_seg_FILE]:
@@ -187,6 +179,8 @@ for subject, output_FOLDER in zip(subjectList, outputList):
 # Best to catch the error and move on to a different subject rather than quit the loop
     try:
         Data = registration(subject_folder = subject_FOLDER, output_folder=output_FOLDER, imgFilename=image_FILE, segFilename=seg_FILE, refdir=args.refs, classes=class_list, doBoth=1)
+    except Exception as e:
+        print(e)
     except (KeyboardInterrupt, SystemExit):
         raise
     except:

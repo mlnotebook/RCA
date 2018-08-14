@@ -14,12 +14,28 @@ Valindria, V. V, Lavdas, I., Bai, W., Kamnitsas, K., Aboagye, E. O., Rockall, A.
 
 ## Requirements
 
+These scripts use SimpleElastix to perform image registration. This must be compiled *at the same time* as SimpleITK and can casue some issues if the install is not clean. We recommend creating a new virtualenv and following the documentation here: [http://simpleelastix.readthedocs.io/GettingStarted.html](http://simpleelastix.readthedocs.io/GettingStarted.html, 'SimpleElastix'). We also use `nibabel` for some loading functions. The requirements.txt is:
+
+```
+nibabel==2.2.0
+numpy==1.14.2
+scipy==1.0.1
+SimpleITK==1.1.0
+```
+
 To run RCA on an image-segmentation pair, you require a small (~100) set of reference images and corresponding manual segmentations that are representative of the domain of your segmentation-under-test e.g. a set of short-axis cardiac MRI atlases for testing a short-axis cardiac MRI segmentation.
 
 There are three files:
 * `RCA.py` - the script run to evaluate the predicted quality of a segmentation (see usage below)
 * `RCAfunctions.py` - helper functions for data input, image registration and evaluation
 * `config.cfg` - a configuration file containing important variables
+
+## Output
+
+The output is two-fold
+
+* a visual representation on-screen showing the distribution of reference images by DSC along with the overall output of best DSC and surface-distance metrics
+* a `.mat` file in `output_folder/data` which contains the DSC and surface distance metrics per class and for the whole-segmentation case for each reference image. i.e. each reference image gets a `n x 5` matrix of metric values where `n` is the number of classes. The overall prediction is also stored in the `.mat`.
 
 ## Usage
 
@@ -56,16 +72,22 @@ Like the subjects, the reference images and manual segmentations should each be 
 
 ### `config.cfg`
 
-The configuration file named `config.cfg` is passed to the script. This allows distinction between different experiments using different filenames. You must supply `image_FILE` and `seg_FILE` in `.cfg` e.g.:
+The configuration file named `config.cfg` is passed to the script. This allows distinction between different experiments using different filenames. You must supply `image_FILE` and `seg_FILE` along with the class-labels in `.cfg` e.g.:
 
 ```
-image_FILE = "sa_ED.nii.gz"
-seg_FILE = "label_sa_ED.nii.gz"
+image_FILE = "image.nii.gz"
+seg_FILE = "segmentation.nii.gz"
+class_list = [0,1,2,4]
 ```
 
+## Demo
 
+In this repository there are 5 reference images and manual segmentations in the `references` subfolder. There is a single `segmentation.nii.gz` of an `image.nii.gz` and its manual `GT.nii.gz` in the `test_subjects` subfolder. We have classes 0 (background), 1 (LV cavity), 2 (LV myocardium) and 4 (RV cavity) in our segmentations. Assuming all requirements are met (i.e. SimpleElastix has been compiled) we can run the command:
 
-    
+```
+python ./RCA.py --subject ./test_subjects/subject1 --refs ./reference_images --config config.cfg --GT GT.nii.gz --seg segmentation.nii.gz --output ./done
+```
 
+This runs RCA on the single subject `subject1` and places the output into a folder called `done`. If we passed a `.txt` containing a list of the directories for subjects 1-100, we would have subfolders for each subject placed into `done`.
 
 
