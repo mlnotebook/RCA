@@ -3,8 +3,7 @@
 
 This code implements Reverse Classification Accuracy (RCA) as applied in our MICCAI 2017 paper:
 
-Robinson, R., Valindria, V.V., Bai, W., Suzuki, H., Matthews, P.M., Page, C., Rueckert, D., Glocker, B.: Automatic Quality Control of Cardiac MRI Segmentation in Large-Scale Population Imaging. In Descoteaux, M., Maier-Hein, L., Franz, A., Jannin, P., Collins, D.L., Duchesne, S., eds.: Medical Image Computing and Computer Assisted Intervention - MICCAI 2017, Cham, Springer International Publishing
-(2017) 720–727
+Robinson, R., Valindria, V.V., Bai, W., Suzuki, H., Matthews, P.M., Page, C., Rueckert, D., Glocker, B.: Automatic Quality Control of Cardiac MRI Segmentation in Large-Scale Population Imaging. In Descoteaux, M., Maier-Hein, L., Franz, A., Jannin, P., Collins, D.L., Duchesne, S., eds.: Medical Image Computing and Computer Assisted Intervention - MICCAI 2017, Cham, Springer International Publishing (2017) 720–727
 
 https://www.springerprofessional.de/en/automatic-quality-control-of-cardiac-mri-segmentation-in-large-s/14978904
 
@@ -113,3 +112,13 @@ This time we pass the argument `subjects` and not `subject`:
 ```
 python ./RCA.py --subjects test_subjects.txt --refs ./reference_images --config config.cfg --GT GT.nii.gz --seg segmentation.nii.gz --output ./done
 ```
+
+## Contact
+
+Questions and comments can be directed to Rob Robinson: r.robinson16@imperial.ac.uk
+
+Cite the MICCAI 2017 paper if using/modifying this code:
+
+Robinson, R., Valindria, V.V., Bai, W., Suzuki, H., Matthews, P.M., Page, C., Rueckert, D., Glocker, B.: Automatic Quality Control of Cardiac MRI Segmentation in Large-Scale Population Imaging. In Descoteaux, M., Maier-Hein, L., Franz, A., Jannin, P., Collins, D.L., Duchesne, S., eds.: Medical Image Computing and Computer Assisted Intervention - MICCAI 2017, Cham, Springer International Publishing (2017) 720–727
+
+https://www.springerprofessional.de/en/automatic-quality-control-of-cardiac-mri-segmentation-in-large-s/14978904
