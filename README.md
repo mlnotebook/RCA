@@ -41,8 +41,8 @@ The output is two-fold
 
 `python ./RCA.py --subject/subjects subjects.txt --refs ./refs --config SOMENAME --GT filename.nii.gz --seg filename.nii.gz --output ./done`
 
-* `--subject`: a directory containing the image and segmentation to be tested;
-* `--subjects`: a `.txt` file containgin one image-folder path per line;
+* `--subject`: a directory containing the image and segmentation to be tested; OR
+* `--subjects`: a `.txt` file containing one image-folder path per line;
 * `--refs`: a directory containing subfolders, one for each reference image-segmentation pair;
 * `--config`: name of the config file that contains the filenames;
 * `--output`: a directory (will be created) to contain the output from RCA - will create one subfolder per image in `output`;
